@@ -36,9 +36,6 @@ Esto generará los archivos de datos .csv en el directorio raíz.
 
 ### **3\. Analizar**
 
-Ejecuta el script de Python para generar los gráficos:
-
-\# Reemplaza 'tu\_script\_de\_analisis.py' con el nombre real de tu archivo  
-python tu\_script\_de\_analisis.py
+Ejecuta el script de Python para generar los gráficos
 
 Las imágenes se guardarán automáticamente en la carpeta \`graficos
