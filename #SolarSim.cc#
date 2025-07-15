@@ -1,0 +1,90 @@
+#include "G4RunManager.hh" // <-- Usamos el RunManager SECUENCIAL original
+#include "G4UImanag
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
+
+#include "DetectorConstruction.hh"
+#include "ActionInitialization.hh" // <-- Es buena práctica usar esta clase
+#include "QGSP_BERT.hh"
+
+#include <string>
+
+int main(int argc, char** argv)
+{
+    // --- 1. ANÁLISIS DE ARGUMENTOS ---
+    G4UIExecutive* ui = nullptr;
+    bool withUmbrella = true;
+    int macro_arg_index = 0; // Para saber qué argumento es el archivo de macro
+
+    // Modo interactivo por defecto si no hay argumentos
+    if (argc == 1) {
+        ui = new G4UIExecutive(argc, argv);
+    } else {
+        // Revisa si el primer argumento es "no" o "yes"
+        std::string first_arg = argv[1];
+        if (first_arg == "no") {
+            withUmbrella = false;
+            if (argc > 2) macro_arg_index = 2; // e.g., ./SolarSim no run.mac
+        } else if (first_arg == "yes") {
+            withUmbrella = true;
+            if (argc > 2) macro_arg_index = 2; // e.g., ./SolarSim yes run.mac
+        } else {
+            // Si no, se asume que el primer argumento es el macro
+            macro_arg_index = 1; // e.g., ./SolarSim run.mac
+        }
+    }
+    
+    // Determinar el nombre del archivo de salida como en tu código original
+    G4String outputFilename = withUmbrella ? "con_sombrilla.csv" : "sin_sombrilla.csv";
+
+    // --- 2. CONFIGURACIÓN DE GEANT4 ---
+    auto* runManager = new G4RunManager();
+
+    // Inicializar geometría, pasando el flag y el nombre del archivo
+    runManager->SetUserInitialization(new DetectorConstruction(withUmbrella, outputFilename));
+    
+    // Lista de física
+    runManager->SetUserInitialization(new QGSP_BERT());
+    
+    // Acciones de usuario (incluyendo el PrimaryGeneratorAction)
+    runManager->SetUserInitialization(new ActionInitialization());
+    
+    // Inicializar el kernel de Geant4
+    runManager->Initialize();
+
+    // --- 3. SESIÓN DE UI Y VISUALIZACIÓN ---
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+    if (ui) {
+        // --- MODO INTERACTIVO ---
+        // Se crea el gestor de visualización SÓLO en este modo
+        G4VisManager* visManager = new G4VisExecutive;
+        visManager->Initialize();
+
+        UImanager->ApplyCommand("/control/execute vis.mac");
+        ui->SessionStart();
+        
+        // Limpiar memoria
+        delete ui;
+        delete visManager;
+    }
+    else {
+        // --- MODO BATCH ---
+        // No se toca nada de visualización.
+        // Se ejecuta el macro si se ha proporcionado.
+        if (macro_arg_index > 0) {
+            G4String command = "/control/execute ";
+            G4String fileName = argv[macro_arg_index];
+            UImanager->ApplyCommand(command + fileName);
+        } else {
+            // Error si se está en modo batch sin un macro
+            G4cerr << "Error: Modo batch requiere un archivo de macro." << G4endl;
+            G4cerr << "Uso: " << argv[0] << " [no|yes] <archivo.mac>" << G4endl;
+            return 1; // Devolver un código de error
+        }
+    }
+
+    // --- 4. LIMPIEZA FINAL ---
+    delete runManager;
+    return 0;
+}

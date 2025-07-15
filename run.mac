@@ -1,0 +1,27 @@
+    # ================================================================
+    # run_final.mac
+    #
+    # Macro para la ejecución final con la geometría corregida.
+    # ================================================================
+
+    # --- CONFIGURACIÓN DE LA FUENTE ---
+    /gps/particle gamma
+    /gps/pos/type Plane
+    /gps/pos/shape Circle
+    /gps/pos/centre 0. 0. 100. cm
+
+    # Radio del haz corregido para apuntar al detector
+    /gps/pos/radius 25. cm
+
+    # Dirección
+    /gps/ang/type planar
+    /gps/direction 0 0 -1
+
+    # Energía
+    /gps/ene/mono 1 MeV
+
+    # --- EJECUTAR EL HAZ ---
+    # Usamos 1 millón de eventos para tener buena estadística.
+    # Puedes aumentar este número si es necesario.
+    /run/beamOn 1000000
+    

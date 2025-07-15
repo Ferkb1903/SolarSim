@@ -1,0 +1,48 @@
+# ================================================================
+# vis.mac
+#
+# Versión final que utiliza el coloreado por carga (que es
+# compatible con tu sistema) y el método de dibujo manual
+# para forzar la visualización de todas las trayectorias.
+# ================================================================
+
+# --- 1. Abrir una ventana gráfica ---
+/vis/open OGLIQt 800x600-0+0
+
+# --- 2. Configurar la escena ---
+/vis/drawVolume
+/vis/viewer/set/style wireframe
+/vis/viewer/set/viewpointVector -1 -1 0.8
+/vis/viewer/zoom 2.0
+
+# --- 3. Configurar el dibujo de trayectorias ---
+# Acumula los eventos en memoria sin dibujar automáticamente
+/vis/scene/endOfEventAction accumulate -1
+# Añade los modelos de trayectoria a la escena
+/vis/scene/add/trajectories
+/vis/scene/add/hits
+
+# ¡COMANDO CRÍTICO! Le dice a Geant4 que cree y guarde los objetos de trayectoria.
+/tracking/storeTrajectory 1
+
+# --- 4. Configurar el coloreado por carga ---
+# Usamos un modelo que colorea por carga:
+# Neutro (gamma) = gris, Negativo (e-) = rojo, Positivo (e+) = azul
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/set 0 gray
+/vis/modeling/trajectories/drawByCharge-0/set -1 red
+/vis/modeling/trajectories/drawByCharge-0/set 1 blue
+
+# --- 5. Configurar la fuente de partículas ---
+# La configuración de la partícula (energía, posición) está definida en el código C++.
+# No se necesitan comandos /gps.
+
+# --- 6. Inicializar y disparar eventos ---
+/run/initialize
+/vis/enable
+/run/beamOn 100
+
+# --- 7. ¡EL PASO FINAL! Forzar el dibujo ---
+# Ahora que todos los eventos están en memoria, forzamos al visor a
+# dibujar TODO lo que ha acumulado.
+/vis/viewer/flush

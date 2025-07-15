@@ -1,0 +1,12 @@
+# ================================================================
+# run_1MeV.mac
+#
+# Macro para ejecutar la simulación con G4ParticleGun
+# ================================================================
+
+# 1. Inicializa el Run Manager.
+/run/initialize
+
+# 2. Dispara el haz de partículas.
+# Ejecutamos 100,000 eventos para obtener una buena estadística.
+/run/beamOn 100000

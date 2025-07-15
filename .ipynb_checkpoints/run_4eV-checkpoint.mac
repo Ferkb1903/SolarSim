@@ -1,0 +1,35 @@
+# ================================================================
+# run_4eV.mac
+#
+# Macro para simular fotones de 4 eV (radiación UV).
+# Incluye los comandos para bajar los cortes de producción,
+# lo cual es CRÍTICO para simulaciones de baja energía.
+# ================================================================
+
+# --- 1. ¡COMANDOS CLAVE! Bajar los cortes de producción ---
+# Establecemos el corte por defecto a una longitud muy pequeña (1 nanómetro).
+# Esto le dice a Geant4 que simule partículas incluso si su rango es diminuto.
+/run/setCut 1 nm
+
+# Es buena práctica establecerlo también para las partículas específicas.
+/run/setCutForAGivenParticle gamma 1 nm
+/run/setCutForAGivenParticle e- 1 nm
+/run/setCutForAGivenParticle e+ 1 nm
+
+# --- 2. Configurar la fuente de partículas ---
+/gps/particle gamma
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 0. 0. 100. cm
+/gps/pos/radius 25. cm
+/gps/ang/type planar
+/gps/direction 0 0 -1
+
+# Establecemos la energía a 4 eV, típica de la radiación UV.
+/gps/ene/mono 4 eV
+
+# --- 3. Inicializar y disparar eventos ---
+# Con baja energía, las interacciones son más probables.
+# 100,000 eventos deberían dar una buena estadística.
+/run/initialize
+/run/beamOn 100000

@@ -1,0 +1,34 @@
+# ================================================================
+# debug_1MeV.mac
+#
+# Este macro combina la fuente de partículas de 1 MeV con
+# el tracking detallado para depurar los procesos físicos.
+# ================================================================
+
+# --- ACTIVAR EL MODO DETALLADO (VERBOSE) ---
+/tracking/verbose 1
+
+# --- CONFIGURACIÓN DE LA FUENTE (igual que tu run.mac) ---
+
+# Partícula: fotón (gamma)
+/gps/particle gamma
+
+# Posición: un disco plano
+/gps/pos/type Plane
+/gps/pos/shape Circle
+/gps/pos/centre 0. 0. 100. cm
+
+# --- CORRECCIÓN CLAVE ---
+# El radio del haz ahora es de 25 cm para que coincida con el detector.
+/gps/pos/radius 25. cm
+
+# Dirección: paralela hacia abajo
+/gps/ang/type planar
+/gps/direction 0 0 -1
+
+# Energía: fija a 1 MeV
+/gps/ene/mono 1 MeV
+
+# --- EJECUTAR EL HAZ ---
+# Simulamos solo 3 eventos para que la salida sea manejable.
+/run/beamOn 3

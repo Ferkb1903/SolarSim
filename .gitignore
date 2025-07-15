@@ -1,0 +1,19 @@
+# Directorio de compilación
+build/
+
+# Archivos de datos de salida
+*.csv
+*.out
+*.root
+
+# Archivos de visualización
+*.wrl
+*.hep
+
+# Ejecutables (con y sin los sufijos que usamos)
+SolarSim
+SolarSim_CON
+SolarSim_SIN
+
+# Archivos de respaldo del editor
+*~

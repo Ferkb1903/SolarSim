@@ -1,0 +1,17 @@
+# ================================================================
+# verbose.mac
+#
+# Macro para activar el modo de tracking detallado y ver
+# los procesos físicos que ocurren en la simulación.
+# ================================================================
+
+# --- 1. ¡COMANDO CLAVE! Activar el modo de depuración de tracking ---
+# Imprimirá en la terminal cada paso de cada partícula.
+/tracking/verbose 1
+
+# --- 2. Inicializar y disparar ---
+# Inicializa el run manager.
+/run/initialize
+
+# ¡IMPORTANTE! Solo disparamos 3 eventos para que la salida sea manejable.
+/run/beamOn 3
